@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
           <groupId>org.apache.phoenix</groupId>
-          <artifactId>phoenix</artifactId>
+          <artifactId>phoenix-server-client</artifactId>
           <version>${phoenix.version}</version>
         </dependency>
         <dependency>
