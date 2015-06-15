@@ -103,7 +103,8 @@ public class SQLAuditManager implements AuditManager
 
     handle.createStatement(
         String.format(
-            "INSERT INTO %s ( audit_key, type, author, comment, created_date, payload) VALUES (:audit_key, :type, :author, :comment, :created_date, :payload)",
+                      "UPSERT INTO %1$s (id, audit_key, type, author, comment, created_date, payload) VALUES (NEXT VALUE FOR sequence_%1$s, :audit_key, :type, :author, :comment, :created_date, :payload)",
+                      //            "INSERT INTO %s ( audit_key, type, author, comment, created_date, payload) VALUES (:audit_key, :type, :author, :comment, :created_date, :payload)",
             getAuditTable()
         )
     )

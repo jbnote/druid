@@ -215,6 +215,7 @@ public abstract class SQLMetadataConnector implements MetadataStorageConnector
                 + ")",
                 tableName, getSerialType(), getPayloadType(), entryTypeName
             ),
+            String.format("CREATE SEQUENCE sequence_%1$s START WITH 1 INCREMENT BY 1 CACHE 0", tableName),
             String.format("CREATE INDEX idx_%1$s_%2$s_id ON %1$s(%2$s_id)", tableName, entryTypeName)
         )
     );
@@ -235,6 +236,7 @@ public abstract class SQLMetadataConnector implements MetadataStorageConnector
                 + ")",
                 tableName, getSerialType(), getPayloadType(), entryTypeName
             ),
+            String.format("CREATE SEQUENCE sequence_%1$s START WITH 1 INCREMENT BY 1 CACHE 0", tableName),
             String.format("CREATE INDEX idx_%1$s_%2$s_id ON %1$s(%2$s_id)", tableName, entryTypeName)
         )
     );
@@ -396,6 +398,7 @@ public abstract class SQLMetadataConnector implements MetadataStorageConnector
                 + ")",
                 tableName, getSerialType(), getPayloadType()
             ),
+            String.format("CREATE SEQUENCE sequence_%1$s START WITH 1 INCREMENT BY 1 CACHE 0", tableName),
             String.format("CREATE INDEX idx_%1$s_key_time ON %1$s(audit_key, created_date)", tableName),
             String.format("CREATE INDEX idx_%1$s_type_time ON %1$s(audit_key, created_date)", tableName),
             String.format("CREATE INDEX idx_%1$s_audit_time ON %1$s(created_date)", tableName)

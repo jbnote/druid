@@ -302,9 +302,10 @@ public class SQLMetadataStorageActionHandler<EntryType, StatusType, LogType, Loc
         @Override
         public Boolean withHandle(Handle handle) throws Exception
         {
+            /* XXXX change this */
           return handle.createStatement(
                       String.format(
-                          "INSERT INTO %1$s (%2$s_id, lock_payload) VALUES (:entryId, :payload)",
+                          "UPSERT INTO %1$s (id, %2$s_id, lock_payload) VALUES (NEXT VALUE FOR sequence_%1$s, :entryId, :payload)",
                           lockTable, entryTypeName
                       )
                   )
@@ -345,9 +346,10 @@ public class SQLMetadataStorageActionHandler<EntryType, StatusType, LogType, Loc
         @Override
         public Boolean withHandle(Handle handle) throws Exception
         {
+            /* XXXX change this */
           return handle.createStatement(
                       String.format(
-                          "INSERT INTO %1$s (%2$s_id, log_payload) VALUES (:entryId, :payload)",
+                          "UPSERT INTO %1$s (id, %2$s_id, lock_payload) VALUES (NEXT VALUE FOR sequence_%1$s, :entryId, :payload)",
                           logTable, entryTypeName
                       )
                   )
