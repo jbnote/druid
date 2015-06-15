@@ -44,6 +44,7 @@ import java.util.List;
 @ManageLifecycle
 public class SQLAuditManager implements AuditManager
 {
+  private final SQLMetadataConnector connector;
   private final IDBI dbi;
   private final Supplier<MetadataStorageTablesConfig> dbTables;
   private final ServiceEmitter emitter;
@@ -59,6 +60,7 @@ public class SQLAuditManager implements AuditManager
       SQLAuditManagerConfig config
   )
   {
+    this.connector = connector;
     this.dbi = connector.getDBI();
     this.dbTables = dbTables;
     this.emitter = emitter;
@@ -103,9 +105,8 @@ public class SQLAuditManager implements AuditManager
 
     handle.createStatement(
         String.format(
-                      "UPSERT INTO %1$s (id, audit_key, type, author, comment, created_date, payload) VALUES (NEXT VALUE FOR sequence_%1$s, :audit_key, :type, :author, :comment, :created_date, :payload)",
-                      //            "INSERT INTO %s ( audit_key, type, author, comment, created_date, payload) VALUES (:audit_key, :type, :author, :comment, :created_date, :payload)",
-            getAuditTable()
+                      connector.getUpsertFormatString("audit_key, type, author, comment, created_date, payload", ":audit_key, :type, :author, :comment, :created_date, :payload"),
+                      getAuditTable()
         )
     )
           .bind("audit_key", auditEntry.getKey())

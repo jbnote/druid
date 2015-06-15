@@ -305,7 +305,7 @@ public class SQLMetadataStorageActionHandler<EntryType, StatusType, LogType, Loc
             /* XXXX change this */
           return handle.createStatement(
                       String.format(
-                          "UPSERT INTO %1$s (id, %2$s_id, lock_payload) VALUES (NEXT VALUE FOR sequence_%1$s, :entryId, :payload)",
+                          connector.getUpsertFormatString("%2$s_id, lock_payload", ":entryId, :payload"),
                           lockTable, entryTypeName
                       )
                   )
@@ -349,9 +349,8 @@ public class SQLMetadataStorageActionHandler<EntryType, StatusType, LogType, Loc
             /* XXXX change this */
           return handle.createStatement(
                       String.format(
-                          "UPSERT INTO %1$s (id, %2$s_id, lock_payload) VALUES (NEXT VALUE FOR sequence_%1$s, :entryId, :payload)",
-                          logTable, entryTypeName
-                      )
+                                    connector.getUpsertFormatString("%2$s_id, log_payload", ":entryId, :payload"),
+                                    logTable, entryTypeName)
                   )
                        .bind("entryId", entryId)
                        .bind("payload", jsonMapper.writeValueAsBytes(log))

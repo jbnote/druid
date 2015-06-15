@@ -76,6 +76,13 @@ public abstract class SQLMetadataConnector implements MetadataStorageConnector
 
   public String getValidationQuery() { return "SELECT 1"; }
 
+  /**
+   * SQL template format to use for inserting a value with autoincrement
+   */
+  public String getUpsertFormatString(String vars, String vals) {
+      return String.format("INSERT INTO %%1$s (%s) VALUES (%s)", vars, vals);
+  }
+
   public abstract boolean tableExists(Handle handle, final String tableName);
 
   protected boolean isTransientException(Throwable e) {

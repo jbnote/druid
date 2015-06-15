@@ -33,7 +33,7 @@ public class PhoenixConnector extends SQLMetadataConnector
 {
   private static final Logger log = new Logger(PhoenixConnector.class);
   private static final String PAYLOAD_TYPE = "VARBINARY";
-  private static final String SERIAL_TYPE = "UNSIGNED_LONG";
+  private static final String SERIAL_TYPE = "BIGINT";
 
   private final DBI dbi;
 
@@ -49,6 +49,11 @@ public class PhoenixConnector extends SQLMetadataConnector
     datasource.setDriverClassName("org.apache.phoenix.jdbc.PhoenixDriver");
 
     this.dbi = new DBI(datasource);
+  }
+
+  @Override
+  public String getUpsertFormatString(String vars, String vals) {
+      return format("UPSERT INTO %%1$s (id, %s) VALUES (NEXT VALUE FOR sequence_%%1$s, %s)", vars, vals)
   }
 
   @Override
