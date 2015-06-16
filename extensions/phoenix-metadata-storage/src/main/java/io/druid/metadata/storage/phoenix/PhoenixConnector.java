@@ -53,7 +53,7 @@ public class PhoenixConnector extends SQLMetadataConnector
 
   @Override
   public String getUpsertFormatString(String vars, String vals) {
-      return format("UPSERT INTO %%1$s (id, %s) VALUES (NEXT VALUE FOR sequence_%%1$s, %s)", vars, vals)
+      return String.format("UPSERT INTO %%1$s (id, %s) VALUES (NEXT VALUE FOR sequence_%%1$s, %s)", vars, vals);
   }
 
   @Override
@@ -71,13 +71,12 @@ public class PhoenixConnector extends SQLMetadataConnector
   @Override
   public boolean tableExists(final Handle handle, final String tableName)
   {
-    return !handle.createQuery(
-        "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public' AND tablename LIKE :tableName"
-    )
-                 .bind("tableName", tableName)
-                 .map(StringMapper.FIRST)
-                 .list()
-                 .isEmpty();
+      try {
+          return handle.getConnection().getMetaData().getTables(null, null, tableName, null).first();
+      } catch (java.sql.SQLException e) {
+          /* Let table creation handle the exn */
+          return true;
+      }
   }
 
   @Override
@@ -97,15 +96,11 @@ public class PhoenixConnector extends SQLMetadataConnector
           {
             handle.createStatement(
                 String.format(
-                    "BEGIN;\n" +
-                    "LOCK TABLE %1$s IN SHARE ROW EXCLUSIVE MODE;\n" +
-                    "WITH upsert AS (UPDATE %1$s SET %3$s=:value WHERE %2$s=:key RETURNING *)\n" +
-                    "    INSERT INTO %1$s (%2$s, %3$s) SELECT :key, :value WHERE NOT EXISTS (SELECT * FROM upsert)\n;" +
-                    "COMMIT;",
-                    tableName,
-                    keyColumn,
-                    valueColumn
-                )
+                              "UPSERT INTO %1$s (%2$s, %3$s) VALUES (:key, :value)",
+                              tableName,
+                              keyColumn,
+                              valueColumn
+                              )
             )
                   .bind("key", key)
                   .bind("value", value)
