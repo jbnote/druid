@@ -28,7 +28,7 @@
     <parent>
         <groupId>io.druid</groupId>
         <artifactId>druid</artifactId>
-        <version>0.7.3</version>
+        <version>0.7.3-cdh5.4.2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
